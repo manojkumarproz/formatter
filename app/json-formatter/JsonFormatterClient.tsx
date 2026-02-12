@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import Editor from "@monaco-editor/react";
+import AdPlaceholder from "@/components/AdPlaceholder";
 
 export default function JsonFormatterClient() {
   const [input, setInput] = useState("");
@@ -13,7 +14,7 @@ export default function JsonFormatterClient() {
       setOutput(formatted);
       setError("");
     } catch {
-      setError("Invalid JSON");
+      setError("Invalid JSON format");
     }
   };
 
@@ -28,46 +29,72 @@ export default function JsonFormatterClient() {
   };
 
   return (
-    <div className="p-6 max-w-6xl mx-auto">
-      <h1 className="text-3xl font-bold mb-4">JSON Formatter</h1>
+    <div className="flex flex-col h-[calc(100vh-64px)]">
+      {/* <AdPlaceholder /> */}
 
-      <div className="flex gap-3 mb-4">
-        <button onClick={formatJSON} className="bg-blue-600 text-white px-4 py-2 rounded">
+
+      {/* Sticky Toolbar */}
+      <div className="sticky top-0 z-10 bg-white border-b p-3 flex gap-3">
+        <button
+          onClick={formatJSON}
+          className="bg-blue-600 text-white px-4 py-2 rounded"
+        >
           Format
         </button>
 
-        <button onClick={copyOutput} className="bg-green-600 text-white px-4 py-2 rounded">
+        <button
+          onClick={copyOutput}
+          className="bg-green-600 text-white px-4 py-2 rounded"
+        >
           Copy
         </button>
 
-        <button onClick={clearAll} className="bg-gray-500 text-white px-4 py-2 rounded">
+        <button
+          onClick={clearAll}
+          className="bg-gray-500 text-white px-4 py-2 rounded"
+        >
           Clear
         </button>
+
+        {error && (
+          <span className="text-red-500 ml-4 font-medium">{error}</span>
+        )}
       </div>
 
-      {error && <p className="text-red-500 mb-3">{error}</p>}
+      {/* Editors */}
+      <div className="grid md:grid-cols-2 flex-1">
+        <Editor
+          height="100%"
+          defaultLanguage="json"
+          value={input}
+          onChange={(value) => setInput(value || "")}
+          theme="vs-dark"
+          options={{
+            minimap: { enabled: false },
+            fontSize: 14,
+            wordWrap: "on",
+          }}
+        />
 
-        <div className="grid md:grid-cols-2 gap-4">
-            <Editor
-                height="400px"
-                defaultLanguage="json"
-                value={input}
-                onChange={(value) => setInput(value || "")}
-                theme="vs-dark"
-            />
+        <Editor
+          height="100%"
+          defaultLanguage="json"
+          value={output}
+          theme="vs-dark"
+          options={{
+            readOnly: true,
+            minimap: { enabled: false },
+            fontSize: 14,
+            wordWrap: "on",
+          }}
+        />
+      </div>
 
-            <Editor
-                height="400px"
-                defaultLanguage="json"
-                value={output}
-                options={{
-                readOnly: true,
-                minimap: { enabled: false },
-                }}
-                theme="vs-dark"
-            />
-        </div>
-
+      {/* Status Bar */}
+      <div className="bg-gray-900 text-white text-sm px-4 py-2 flex justify-between">
+        <span>Input Characters: {input.length}</span>
+        <span>Output Characters: {output.length}</span>
+      </div>
     </div>
   );
 }

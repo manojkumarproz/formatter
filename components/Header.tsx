@@ -8,7 +8,7 @@ export default function Header() {
           DevTools
         </Link>
 
-        <nav className="flex gap-6 text-sm">
+        {/* <nav className="flex gap-6 text-sm">
           <Link href="/json-formatter" className="hover:text-gray-300">
             JSON Formatter
           </Link>
@@ -16,7 +16,7 @@ export default function Header() {
           <Link href="/base64-encoder" className="hover:text-gray-300">
             Base64 Tool
           </Link>
-        </nav>
+        </nav> */}
       </div>
     </header>
   );
