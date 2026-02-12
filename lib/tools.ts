@@ -5,6 +5,11 @@ export const tools = [
     link: "/json-formatter",
   },
   {
+    name: "Bcrypt Generator",
+    description: "Generate bcrypt password hashes",
+    link: "/bcrypt-generator",
+    },
+  {
     name: "Base64 Encoder",
     description: "Encode and decode Base64 strings",
     link: "/base64-encoder",

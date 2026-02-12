@@ -1,26 +1,45 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Editor from "@monaco-editor/react";
-import AdPlaceholder from "@/components/AdPlaceholder";
+import Toast from "@/components/Toast";
 
 export default function JsonFormatterClient() {
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
   const [error, setError] = useState("");
+  const [autoFormat, setAutoFormat] = useState(true);
+  const [showToast, setShowToast] = useState(false);
 
+
+  // Manual format function
   const formatJSON = () => {
+    if (!input.trim()) {
+      setOutput("");
+      setError("");
+      return;
+    }
+
     try {
       const formatted = JSON.stringify(JSON.parse(input), null, 2);
       setOutput(formatted);
       setError("");
     } catch {
       setError("Invalid JSON format");
+      setOutput("");
     }
   };
 
-  const copyOutput = () => {
-    navigator.clipboard.writeText(output);
-  };
+  // Auto format when input changes
+  useEffect(() => {
+    if (!autoFormat) return;
+    formatJSON();
+  }, [input, autoFormat]);
+
+    const copyOutput = () => {
+        navigator.clipboard.writeText(output);
+        setShowToast(true);
+        setTimeout(() => setShowToast(false), 2000);
+    };
 
   const clearAll = () => {
     setInput("");
@@ -30,11 +49,10 @@ export default function JsonFormatterClient() {
 
   return (
     <div className="flex flex-col h-[calc(100vh-64px)]">
-      {/* <AdPlaceholder /> */}
 
-
-      {/* Sticky Toolbar */}
-      <div className="sticky top-0 z-10 bg-white border-b p-3 flex gap-3">
+      {/* Toolbar */}
+      <div className="sticky top-0 z-10 bg-white border-b p-3 flex gap-3 flex-wrap">
+        
         <button
           onClick={formatJSON}
           className="bg-blue-600 text-white px-4 py-2 rounded"
@@ -56,8 +74,19 @@ export default function JsonFormatterClient() {
           Clear
         </button>
 
+        <label className="flex items-center gap-2 ml-4 text-sm">
+          <input
+            type="checkbox"
+            checked={autoFormat}
+            onChange={() => setAutoFormat(!autoFormat)}
+          />
+          Auto Format
+        </label>
+
         {error && (
-          <span className="text-red-500 ml-4 font-medium">{error}</span>
+          <span className="text-red-500 ml-4 font-medium">
+            {error}
+          </span>
         )}
       </div>
 
@@ -90,11 +119,13 @@ export default function JsonFormatterClient() {
         />
       </div>
 
-      {/* Status Bar */}
+      {/* Status bar */}
       <div className="bg-gray-900 text-white text-sm px-4 py-2 flex justify-between">
         <span>Input Characters: {input.length}</span>
         <span>Output Characters: {output.length}</span>
       </div>
+
+      <Toast message="Copied to clipboard" show={showToast} />
     </div>
   );
 }
