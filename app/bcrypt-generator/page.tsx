@@ -2,6 +2,7 @@
 import { useState } from "react";
 import bcrypt from "bcryptjs";
 import Toast from "@/components/Toast";
+import Breadcrumb from "@/components/Breadcrumb";
 
 export default function BcryptGenerator() {
   const [text, setText] = useState("");
@@ -41,7 +42,9 @@ export default function BcryptGenerator() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-6">
+    <>
+        <Breadcrumb title="Bcrypt Generator" />
+        <div className="max-w-3xl mx-auto p-6">
       <h1 className="text-3xl font-bold mb-6">
         Bcrypt Hash Generator
       </h1>
@@ -106,5 +109,7 @@ export default function BcryptGenerator() {
       )}
       <Toast message="Copied to clipboard" show={showToast} />
     </div>
+    </>
+    
   );
 }
